@@ -22,7 +22,7 @@ public class VouchApplication extends Application<VouchConfiguration> {
 	    final VoucherResource voucherResource = new VoucherResource();
 	    final CampaignResource campaignResource = new CampaignResource();
 	    final BasicAuthProvider<User> authProvider = new BasicAuthProvider<User>(new VoucherAuthentication(),
-                "SUPER SECRET STUFF");
+                "VouchForItUser");
 	    environment.jersey().register(voucherResource);
 	    environment.jersey().register(campaignResource);
 	    environment.jersey().register(authProvider);
