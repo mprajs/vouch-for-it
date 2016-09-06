@@ -19,5 +19,9 @@ public class CampaignDAO extends AbstractDAO<Campaign> {
     public Campaign create(Campaign campaign) {
         return persist(campaign);
     }
+    
+    public Campaign findByPrefix(String prefix) {
+    	return uniqueResult(namedQuery("findByPrefix").setString("prefix", prefix));
+    }
 
 }

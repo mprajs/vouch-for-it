@@ -1,5 +1,6 @@
 package com.rspective.interview.vouch.dao;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.hibernate.SessionFactory;
@@ -20,6 +21,10 @@ public class VoucherDAO extends AbstractDAO<Voucher> {
 
     public Voucher create(Voucher voucher) {
         return persist(voucher);
+    }
+    
+    public List<Voucher> findByCampaignPrefix(String prefix) {
+    	return list(namedQuery("findByCampaignPrefix").setString("prefix", prefix));
     }
 
 }

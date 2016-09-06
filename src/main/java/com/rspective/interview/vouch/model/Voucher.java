@@ -2,16 +2,36 @@ package com.rspective.interview.vouch.model;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
+import javax.persistence.SequenceGenerator;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
+@SequenceGenerator(
+		  name = "VOUCHER_SEQ_GENERATOR",
+		  sequenceName = "VOUCHER_SEQ",
+		  initialValue = 100, allocationSize = 1)
+@NamedQueries({
+	@NamedQuery(
+			name = "findByCampaignPrefix",
+			query = "Select v from Voucher v where campaign.prefix = :prefix"
+			),
+	@NamedQuery(
+			name = "findByCode",
+			query = "Select v from Voucher v where v.code = :code"
+			)
+})
 public class Voucher {
 
 	@Id
+	@GeneratedValue(strategy=GenerationType.SEQUENCE, generator = "VOUCHER_SEQ_GENERATOR")
 	private Long id;
 	
 	@Column(name = "discount_value")
@@ -66,5 +86,11 @@ public class Voucher {
 
 	public void setCampaign(Campaign campaign) {
 		this.campaign = campaign;
+	}
+
+	public static Voucher generateVoucher() {
+		Voucher generated = new Voucher();
+		generated.setCode("asdfg");
+		return generated;
 	}
 }
