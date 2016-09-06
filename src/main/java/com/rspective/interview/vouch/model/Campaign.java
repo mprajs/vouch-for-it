@@ -1,10 +1,12 @@
 package com.rspective.interview.vouch.model;
 
 import java.util.Date;
+import java.util.Set;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
 
 @Entity
 public class Campaign {
@@ -15,11 +17,14 @@ public class Campaign {
 	@Column
 	private String prefix;
 	
-	@Column
+	@Column(name = "date_from")
 	private Date dateFrom;
 	
-	@Column
+	@Column(name = "date_to")
 	private Date dateTo;
+	
+	@OneToMany(mappedBy = "campaign")
+	private Set<Voucher> vouchers;
 
 	public Long getId() {
 		return id;
@@ -51,5 +56,13 @@ public class Campaign {
 
 	public void setDateTo(Date dateTo) {
 		this.dateTo = dateTo;
+	}
+
+	public Set<Voucher> getVouchers() {
+		return vouchers;
+	}
+
+	public void setVouchers(Set<Voucher> vouchers) {
+		this.vouchers = vouchers;
 	}
 }

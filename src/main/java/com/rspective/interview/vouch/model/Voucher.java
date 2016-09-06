@@ -3,6 +3,10 @@ package com.rspective.interview.vouch.model;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
 public class Voucher {
@@ -10,14 +14,19 @@ public class Voucher {
 	@Id
 	private Long id;
 	
-	@Column
+	@Column(name = "discount_value")
 	private Integer discountValue;
 	
 	@Column
 	private String code;
 	
-	@Column
+	@Column(name = "discount_type")
 	private Integer discountType;
+	
+	@ManyToOne
+	@JoinColumn(name = "campaign_id")
+	@JsonIgnore
+	private Campaign campaign;
 
 	public Long getId() {
 		return id;
@@ -49,5 +58,13 @@ public class Voucher {
 
 	public void setDiscountType(Integer discountType) {
 		this.discountType = discountType;
+	}
+
+	public Campaign getCampaign() {
+		return campaign;
+	}
+
+	public void setCampaign(Campaign campaign) {
+		this.campaign = campaign;
 	}
 }
