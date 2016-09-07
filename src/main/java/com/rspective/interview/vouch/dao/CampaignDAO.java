@@ -16,7 +16,7 @@ public class CampaignDAO extends AbstractDAO<Campaign> {
         return get(id);
     }
 
-    public Campaign create(Campaign campaign) {
+    public Campaign createOrUpdate(Campaign campaign) {
         return persist(campaign);
     }
     

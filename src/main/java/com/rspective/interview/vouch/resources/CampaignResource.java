@@ -45,6 +45,6 @@ public class CampaignResource {
 			vouchers.add(Voucher.generateVoucher());
 		}
 		c.setVouchers(vouchers);
-		return dao.create(c);
+		return dao.createOrUpdate(c);
 	}
 }

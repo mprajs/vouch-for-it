@@ -43,6 +43,9 @@ public class Voucher {
 	@Column(name = "discount_type")
 	private Integer discountType;
 	
+	@Column
+	private Boolean active;
+	
 	@ManyToOne
 	@JoinColumn(name = "campaign_id")
 	@JsonIgnore
@@ -86,6 +89,14 @@ public class Voucher {
 
 	public void setCampaign(Campaign campaign) {
 		this.campaign = campaign;
+	}
+
+	public Boolean getActive() {
+		return active;
+	}
+
+	public void setActive(Boolean active) {
+		this.active = active;
 	}
 
 	public static Voucher generateVoucher() {

@@ -19,12 +19,22 @@ public class VoucherDAO extends AbstractDAO<Voucher> {
         return Optional.ofNullable(get(id));
     }
 
-    public Voucher create(Voucher voucher) {
+    public Voucher createOrUpdate(Voucher voucher) {
         return persist(voucher);
     }
     
     public List<Voucher> findByCampaignPrefix(String prefix) {
     	return list(namedQuery("findByCampaignPrefix").setString("prefix", prefix));
     }
+    
+    public Voucher findByCode(String code) {
+    	if (!code.contains("_")) {
+    		return null;
+    	}
+    	String[] campaignAndCode = code.split("_");
+    	Voucher v = uniqueResult(namedQuery("findByCode").setString("code", campaignAndCode[1]));
+    	return v;
+    }
+    
 
 }

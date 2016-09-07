@@ -45,7 +45,7 @@ public class VouchApplication extends Application<VouchConfiguration> {
 		final VoucherDAO voucherDao = new VoucherDAO(hibernateBundle.getSessionFactory());
 		final CampaignDAO campaignDao = new CampaignDAO(hibernateBundle.getSessionFactory());
 
-		final VoucherResource voucherResource = new VoucherResource(voucherDao);
+		final VoucherResource voucherResource = new VoucherResource(voucherDao, campaignDao);
 		final CampaignResource campaignResource = new CampaignResource(campaignDao);
 		environment.jersey().register(voucherResource);
 		environment.jersey().register(campaignResource);
@@ -56,8 +56,6 @@ public class VouchApplication extends Application<VouchConfiguration> {
 								// .setAuthorizer(new ExampleAuthorizer())
 								.setRealm("VouchForItUser").buildAuthFilter()));
 		environment.jersey().register(RolesAllowedDynamicFeature.class);
-		// If you want to use @Auth to inject a custom Principal type into your
-		// resource
 		environment.jersey().register(new AuthValueFactoryProvider.Binder<>(User.class));
 	}
 
