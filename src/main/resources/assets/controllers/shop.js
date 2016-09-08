@@ -1,9 +1,9 @@
 angular.module('vouchApp', [])
   .controller('VoucherShopController', function($scope, $http) {
 	  $scope.stock = [
-	               {"name" : "Dziwki",
+	               {"name" : "Szmery",
 	            	   "price" : "3000"},
-	               {"name" : "Koks",
+	               {"name" : "Bajery",
 	            	   "price" : "323"},
 	               {"name" : "Lasery",
 	            	   "price" : "275"}
