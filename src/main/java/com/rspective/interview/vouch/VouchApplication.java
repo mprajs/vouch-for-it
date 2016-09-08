@@ -1,5 +1,15 @@
 package com.rspective.interview.vouch;
 
+import io.dropwizard.Application;
+import io.dropwizard.assets.AssetsBundle;
+import io.dropwizard.auth.AuthDynamicFeature;
+import io.dropwizard.auth.AuthValueFactoryProvider;
+import io.dropwizard.auth.basic.BasicCredentialAuthFilter;
+import io.dropwizard.db.DataSourceFactory;
+import io.dropwizard.hibernate.HibernateBundle;
+import io.dropwizard.setup.Bootstrap;
+import io.dropwizard.setup.Environment;
+
 import org.glassfish.jersey.server.filter.RolesAllowedDynamicFeature;
 
 import com.rspective.interview.vouch.auth.User;
@@ -10,15 +20,6 @@ import com.rspective.interview.vouch.model.Campaign;
 import com.rspective.interview.vouch.model.Voucher;
 import com.rspective.interview.vouch.resources.CampaignResource;
 import com.rspective.interview.vouch.resources.VoucherResource;
-
-import io.dropwizard.Application;
-import io.dropwizard.auth.AuthDynamicFeature;
-import io.dropwizard.auth.AuthValueFactoryProvider;
-import io.dropwizard.auth.basic.BasicCredentialAuthFilter;
-import io.dropwizard.db.DataSourceFactory;
-import io.dropwizard.hibernate.HibernateBundle;
-import io.dropwizard.setup.Bootstrap;
-import io.dropwizard.setup.Environment;
 
 public class VouchApplication extends Application<VouchConfiguration> {
 
@@ -37,6 +38,7 @@ public class VouchApplication extends Application<VouchConfiguration> {
 	@Override
 	public void initialize(Bootstrap<VouchConfiguration> bootstrap) {
 		bootstrap.addBundle(hibernateBundle);
+		bootstrap.addBundle(new AssetsBundle("/assets/", "/view", "index.html"));
 	}
 
 	@Override

@@ -49,16 +49,27 @@ public class VoucherResource {
 	@Timed
 	@UnitOfWork
 	@Path("use")
-	public Voucher useVoucher(@QueryParam("code") String code) {
+	public Double useVoucher(@QueryParam("code") String code, @QueryParam("price") Double price) {
 		Voucher v = dao.findByCode(code);
 		if (!v.getActive().booleanValue()) {
 			return null;
 		}
+		Double result = calculatePrice(price, v); 
 		v.setActive(false);
 		dao.createOrUpdate(v);
-		return v;
+		return result;
 	}
 	
+	private Double calculatePrice(Double price, Voucher v) {
+		Double discountedPrice;
+		if (v.getDiscountType() == 0) {
+			discountedPrice = price-price*(v.getDiscountValue().doubleValue()/100.0);
+		} else {
+			discountedPrice = price - v.getDiscountValue();
+		}
+		return discountedPrice;
+	}
+
 	public Set<Voucher> addVouchers(@QueryParam("campaign") String campaign, @QueryParam("quantity") int quantity) {
 		Campaign c = cDao.findByPrefix(campaign);
 		Set<Voucher> vouchers = new HashSet<>();

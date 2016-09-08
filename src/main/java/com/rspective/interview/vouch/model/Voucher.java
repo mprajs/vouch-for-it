@@ -50,7 +50,7 @@ public class Voucher {
 	@JoinColumn(name = "campaign_id")
 	@JsonIgnore
 	private Campaign campaign;
-
+	
 	public Long getId() {
 		return id;
 	}

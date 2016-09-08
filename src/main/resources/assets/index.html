@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html ng-app="vouchApp">
+	<head>
+		<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.8/angular.min.js"></script>
+		<script src="view/controllers/shop.js"></script>
+	</head>
+	<body ng-controller="VoucherShopController">
+	<div ng-repeat="article in stock track by $index">
+		<table>
+			<tr>
+				<td>{{article.name}}</td>
+				<td>{{article.price}}</td>
+				<td><input type="text" ng-model="code[$index]"/></td>
+				<td><input type="button" value="zrealizuj kod" ng-click="chooseArticle(article, code[$index], $index)"></td>
+				<td>{{discountPrice[$index]}}</td>
+			</tr>
+		</table>
+	</div>
+	<p>{{selected}}</p>
+	<p>{{codes}}</p>
+	</body>
+</html>

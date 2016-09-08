@@ -3,3 +3,4 @@
 /.project
 /vouch.lock.db
 /vouch.trace.db
+/.settings/
