@@ -10,6 +10,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.SequenceGenerator;
+import javax.persistence.Transient;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
@@ -51,6 +52,7 @@ public class Voucher {
 	@JsonIgnore
 	private Campaign campaign;
 	
+	@Transient
 	private Double priceAfterDiscount;
 
 	public Long getId() {

@@ -49,7 +49,7 @@ public class VoucherResource {
 	@Timed
 	@UnitOfWork
 	@Path("use")
-	public Voucher useVoucher(@QueryParam("code") String code, Double price) {
+	public Voucher useVoucher(@QueryParam("code") String code, @QueryParam("price") Double price) {
 		Voucher v = dao.findByCode(code);
 		if (!v.getActive().booleanValue()) {
 			return null;
