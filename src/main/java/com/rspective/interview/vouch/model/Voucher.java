@@ -1,5 +1,7 @@
 package com.rspective.interview.vouch.model;
 
+import java.util.UUID;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -10,7 +12,6 @@ import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.SequenceGenerator;
-import javax.persistence.Transient;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
@@ -102,7 +103,7 @@ public class Voucher {
 
 	public static Voucher generateVoucher() {
 		Voucher generated = new Voucher();
-		generated.setCode("asdfg");
+		generated.setCode(UUID.randomUUID().toString().substring(0, 5));
 		return generated;
 	}
 }
