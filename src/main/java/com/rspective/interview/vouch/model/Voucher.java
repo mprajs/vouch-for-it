@@ -50,6 +50,8 @@ public class Voucher {
 	@JoinColumn(name = "campaign_id")
 	@JsonIgnore
 	private Campaign campaign;
+	
+	private Double priceAfterDiscount;
 
 	public Long getId() {
 		return id;
@@ -97,6 +99,14 @@ public class Voucher {
 
 	public void setActive(Boolean active) {
 		this.active = active;
+	}
+
+	public Double getPriceAfterDiscount() {
+		return priceAfterDiscount;
+	}
+
+	public void setPriceAfterDiscount(Double priceAfterDiscount) {
+		this.priceAfterDiscount = priceAfterDiscount;
 	}
 
 	public static Voucher generateVoucher() {
