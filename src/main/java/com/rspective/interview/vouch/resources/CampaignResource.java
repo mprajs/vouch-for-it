@@ -1,23 +1,24 @@
 package com.rspective.interview.vouch.resources;
 
+import io.dropwizard.hibernate.UnitOfWork;
+
+import java.net.URI;
 import java.util.HashSet;
 import java.util.Set;
 
 import javax.ws.rs.GET;
+import javax.ws.rs.POST;
 import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
-import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 
 import com.codahale.metrics.annotation.Timed;
 import com.rspective.interview.vouch.dao.CampaignDAO;
 import com.rspective.interview.vouch.model.Campaign;
+import com.rspective.interview.vouch.model.CampaignRequestObject;
 import com.rspective.interview.vouch.model.Voucher;
 
-import io.dropwizard.hibernate.UnitOfWork;
-
 @Path("/campaign")
-@Produces(MediaType.APPLICATION_JSON)
 public class CampaignResource {
 
 	private CampaignDAO dao;
@@ -29,22 +30,29 @@ public class CampaignResource {
 	@GET
 	@Timed
 	@UnitOfWork
-	public Campaign getByPrefix(@QueryParam("prefix") String prefix) {
+	public Response getByPrefix(@QueryParam("prefix") String prefix) {
 		Campaign result = dao.findByPrefix(prefix);
-		return result;
+		if (result == null) {
+			return Response.status(Response.Status.NOT_FOUND).build();
+		}
+		return Response.ok(result).build();
 	}
 	
-	@GET
-	@Path("create")
+	@POST
 	@UnitOfWork
-	public Campaign createCampaign(@QueryParam("quantity") int quantity, @QueryParam("prefix") String prefix) {
+	@Timed
+	public Response createCampaign(CampaignRequestObject request) {
 		Campaign c = new Campaign();
-		c.setPrefix(prefix);
+		c.setPrefix(request.getPrefix());
 		Set<Voucher> vouchers = new HashSet<>();
-		for (int i = 0; i < quantity; i++) {
+		for (int i = 0; i < request.getQuantity(); i++) {
 			vouchers.add(Voucher.generateVoucher());
 		}
 		c.setVouchers(vouchers);
-		return dao.createOrUpdate(c);
+		Campaign created = dao.createOrUpdate(c);
+		if (created == null) {
+			return Response.status(Response.Status.NOT_FOUND).build();
+		}
+		return Response.created(URI.create("?prefix="+request.getPrefix())).build();
 	}
 }
