@@ -1,22 +1,28 @@
 package com.rspective.interview.vouch.resources;
 
+import io.dropwizard.hibernate.UnitOfWork;
+
+import java.net.URI;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
 import javax.ws.rs.GET;
+import javax.ws.rs.POST;
+import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 
 import com.codahale.metrics.annotation.Timed;
 import com.rspective.interview.vouch.dao.CampaignDAO;
 import com.rspective.interview.vouch.dao.VoucherDAO;
 import com.rspective.interview.vouch.model.Campaign;
 import com.rspective.interview.vouch.model.Voucher;
-
-import io.dropwizard.hibernate.UnitOfWork;
+import com.rspective.interview.vouch.model.VoucherRequestObject;
 
 @Path("/voucher")
 @Produces(MediaType.APPLICATION_JSON)
@@ -33,31 +39,42 @@ public class VoucherResource {
 	@GET
 	@Timed
 	@UnitOfWork
-	public List<Voucher> getByCampaignPrefix(@QueryParam("prefix") String prefix) {
-		return dao.findByCampaignPrefix(prefix);
+	public Response getByCampaignPrefix(@QueryParam("prefix") String prefix) {
+		List<Voucher> result = dao.findByCampaignPrefix(prefix); 
+		if (result == null || result.size() == 0) {
+			return Response.status(Response.Status.NOT_FOUND).build();
+		}
+		return Response.ok(result).build();
 	}
 
 	@GET
 	@Timed
 	@UnitOfWork
 	@Path("get")
-	public Voucher getByCode(@QueryParam("code") String code) {
-		return dao.findByCode(code);
+	public Response getByCode(@QueryParam("code") String code) {
+		Voucher result = dao.findByCode(code);
+		if (result == null) {
+			return Response.status(Response.Status.NOT_FOUND).build(); 
+		}
+		return Response.ok(result).build();
 	}
 	
-	@GET
+	@PUT
 	@Timed
 	@UnitOfWork
 	@Path("use")
-	public Double useVoucher(@QueryParam("code") String code, @QueryParam("price") Double price) {
-		Voucher v = dao.findByCode(code);
-		if (!v.getActive().booleanValue()) {
-			return null;
+	public Response useVoucher(VoucherRequestObject request) {//@RequestParam("code") String code, @QueryParam("price") Double price) {
+		Voucher v = dao.findByCode(request.getCode());
+		if (v == null || !v.getActive().booleanValue() || new Date().after(v.getCampaign().getDateTo())) {
+			return Response.status(Response.Status.NOT_FOUND).build();
 		}
-		Double result = calculatePrice(price, v); 
+		Double result = calculatePrice(request.getPrice(), v); 
 		v.setActive(false);
-		dao.createOrUpdate(v);
-		return result;
+		Voucher updated = dao.createOrUpdate(v);
+		if (updated == null) {
+			return Response.status(Response.Status.NOT_FOUND).build();
+		}
+		return Response.ok(result).build();
 	}
 	
 	private Double calculatePrice(Double price, Voucher v) {
@@ -70,10 +87,13 @@ public class VoucherResource {
 		return discountedPrice;
 	}
 
-	public Set<Voucher> addVouchers(@QueryParam("campaign") String campaign, @QueryParam("quantity") int quantity) {
-		Campaign c = cDao.findByPrefix(campaign);
+	@POST
+	@Timed
+	@UnitOfWork
+	public Response addVouchers(VoucherRequestObject request) {
+		Campaign c = cDao.findByPrefix(request.getCampaign());
 		Set<Voucher> vouchers = new HashSet<>();
-		for (int i = 0; i < quantity; i++) {
+		for (int i = 0; i < request.getQuantity(); i++) {
 			vouchers.add(Voucher.generateVoucher());
 		}
 		if (c == null) {
@@ -83,8 +103,10 @@ public class VoucherResource {
 		} else {
 			c.getVouchers().addAll(vouchers);
 		}
-		cDao.createOrUpdate(c);
-		return vouchers;
-
+		Set<Voucher> result = cDao.createOrUpdate(c).getVouchers();
+		if (result == null || result.size() == 0) {
+			return Response.status(Response.Status.NOT_FOUND).build();
+		}
+		return Response.created(URI.create("?prefix="+request.getCampaign())).build();
 	}
 }
