@@ -9,7 +9,9 @@ import java.util.Set;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
+import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
+import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import com.codahale.metrics.annotation.Timed;
@@ -19,6 +21,7 @@ import com.rspective.interview.vouch.model.CampaignRequestObject;
 import com.rspective.interview.vouch.model.Voucher;
 
 @Path("/campaign")
+@Produces(MediaType.APPLICATION_JSON)
 public class CampaignResource {
 
 	private CampaignDAO dao;
