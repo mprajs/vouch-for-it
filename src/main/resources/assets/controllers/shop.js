@@ -12,7 +12,9 @@ angular.module('vouchApp', [])
 	  $scope.codes = [];
 	  $scope.discountPrice = [];
 	  $scope.chooseArticle = function(article, code, index) {
-		  $http.get("/voucher/use?code="+code+"&price="+article.price)
+		  var rq = {"code" : code,
+				  "price" : article.price};
+		  $http.put("/voucher/use", rq)
 		  	.then(function(response) {
 		  		$scope.discountPrice[index] = response.data;
 		  	});
